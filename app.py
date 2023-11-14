@@ -6,7 +6,7 @@ import os
 def cargar_excel(uploaded_file):
     return pd.read_excel(uploaded_file)
 
-def descargar_archivo(url, index, total, errores, folder='descargas', progreso_texto):
+def descargar_archivo(url, index, total, errores, progreso_texto, folder='descargas'):
     if not os.path.exists(folder):
         os.makedirs(folder)
 
@@ -25,6 +25,7 @@ def descargar_archivo(url, index, total, errores, folder='descargas', progreso_t
 
     if descargado:
         progreso_texto.text(f'Descargado: {index+1} de {total}')
+
 
 def main():
     st.title("Descargador de Archivos desde Excel")
