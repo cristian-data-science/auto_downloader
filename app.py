@@ -6,7 +6,7 @@ import os
 def cargar_excel(uploaded_file):
     return pd.read_excel(uploaded_file)
 
-def descargar_archivo(url, index, total, errores, folder='descargas'):
+def descargar_archivo(url, index, total, errores, folder='descargas', progreso_texto):
     if not os.path.exists(folder):
         os.makedirs(folder)
 
@@ -24,7 +24,7 @@ def descargar_archivo(url, index, total, errores, folder='descargas'):
             errores.append((index+1, enlace))
 
     if descargado:
-        st.write(f'Descargado: {index+1} de {total}')
+        progreso_texto.text(f'Descargado: {index+1} de {total}')
 
 def main():
     st.title("Descargador de Archivos desde Excel")
@@ -41,9 +41,12 @@ def main():
             else:
                 total = len(df)
                 errores = []
-                for index, link in enumerate(df[campo_links].dropna()):
-                    descargar_archivo(link, index, total, errores)
+                progreso_texto = st.empty()  # Marcador de posición para el texto de progreso
 
+                for index, link in enumerate(df[campo_links].dropna()):
+                    descargar_archivo(link, index, total, errores, progreso_texto=progreso_texto)
+
+                progreso_texto.empty()  # Limpiar el marcador de posición al finalizar
                 st.success(f'Descargas completadas. Total de errores: {len(errores)}')
                 if errores:
                     st.error("Errores encontrados en las siguientes líneas y enlaces:")
